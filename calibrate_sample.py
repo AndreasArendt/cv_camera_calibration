@@ -6,7 +6,7 @@ import glob
 checkerboard_size = (10, 7)
 
 # Define the size of a square in your defined unit (e.g., cm or mm)
-square_size = 2.5  # example size in cm
+square_size = 0.025  # example size in m
 
 # Prepare object points, like (0,0,0), (1,0,0), (2,0,0), ..., (9,6,0)
 # Multiply by the actual square size to scale to real-world coordinates
