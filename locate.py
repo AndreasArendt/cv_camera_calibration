@@ -8,7 +8,6 @@ from util import transformation
 import math
 from matplotlib.pyplot import cm
 import csv
-import folium
 
 def on_click(event, x, y, p1, p2):
     if event == cv2.EVENT_LBUTTONDOWN:
@@ -55,10 +54,12 @@ for coord in coordinates:
 image_points = np.array([[coord[0], coord[1]] for coord in coordinates], dtype=np.float32)
 world_points = np.array([[coord[5], coord[6], coord[7]] for coord in coordinates], dtype=np.float32)
 
-dist_coeffs = np.array([-0.02400951, -0.12507687, -0.00467869, -0.00041547, 0.40573053])
+dist_coeffs = np.array([-0.0240093,  -0.12507737, -0.00467867, -0.00041549,  0.40573103])
 
-initial_camera_matrix = np.array([[1.21569840e+03, 0.00000000e+00, 8.06295583e+02],
-                                  [0.00000000e+00, 1.22496651e+03, 5.74704067e+02],
+height, width, channels = img.shape
+
+initial_camera_matrix = np.array([[1.21569830e+03, 0.00000000e+00, width/2],
+                                  [0.00000000e+00, 1.22496645e+03, height/2],
                                   [0.00000000e+00, 0.00000000e+00, 1.0]])
 
 # Convert to numpy arrays for OpenCV
@@ -87,14 +88,6 @@ print(str(alt))
 avg_lat = sum([coord[2] for coord in coordinates]) / len(coordinates)
 avg_lon = sum([coord[3] for coord in coordinates]) / len(coordinates)
 map = folium.Map(location=[avg_lat, avg_lon], zoom_start=20)
-
-# tile = folium.TileLayer(
-#         tiles = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-#         attr = 'Esri',
-#         name = 'Esri Satellite',
-#         overlay = False,
-#         control = True
-#        ).add_to(map)
 
 # Add markers to the map
 for coord in coordinates:    
