@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from util import transformation
+from util import exif
 import math
 from matplotlib.pyplot import cm
 import csv
@@ -15,7 +16,7 @@ def on_click(event, x, y, p1, p2):
 
 # Example usage
 csv_file_path = './test/coords_test2.csv'
-img = cv2.imread('./test/test2.jpeg')
+img = cv2.imread('./test/test3.jpeg')
 img = cv2.resize(img, (0,0), fx=0.5, fy=0.5) 
 
 h, w, c = img.shape
@@ -58,8 +59,21 @@ dist_coeffs = np.array([-0.0240093,  -0.12507737, -0.00467867, -0.00041549,  0.4
 
 height, width, channels = img.shape
 
-initial_camera_matrix = np.array([[1.21569830e+03, 0.00000000e+00, width/2],
-                                  [0.00000000e+00, 1.22496645e+03, height/2],
+# initial_camera_matrix = np.array([[1.21569830e+03, 0.00000000e+00, width/2],
+#                                   [0.00000000e+00, 1.22496645e+03, height/2],
+#                                   [0.00000000e+00, 0.00000000e+00, 1.0]])
+
+IPHONE_13_SENSOR_WIDTH = 13 #[mm]
+exif_data = exif.get_exif_data('./test/test2.jpeg')
+focal_length = exif_data.get('FocalLength', (0, 1))
+focal_length = focal_length[0] / focal_length[1] if isinstance(focal_length, tuple) else focal_length
+
+# Calculate new dimensions
+f_x = (float(focal_length) / IPHONE_13_SENSOR_WIDTH) * width
+f_y = (float(focal_length) / IPHONE_13_SENSOR_WIDTH) * height
+
+initial_camera_matrix = np.array([[f_x, 0.00000000e+00, width/2],
+                                  [0.00000000e+00, f_y, height/2],
                                   [0.00000000e+00, 0.00000000e+00, 1.0]])
 
 # Convert to numpy arrays for OpenCV
